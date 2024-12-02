@@ -1,0 +1,19 @@
+input: >
+  foreach line in cat file.txt {
+    print line;
+  }
+
+result: >
+  start
+    statement
+      foreach
+        line
+        statement
+          command
+            cat
+            option  file.txt
+        statement_block
+          statement
+            command
+              print
+              option  line

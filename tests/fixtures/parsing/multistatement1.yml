@@ -1,0 +1,16 @@
+input:
+  MYVAR = 10;
+  print $MYVAR;
+
+result: >
+  start
+    statement
+      assignment
+        MYVAR
+        =
+        int  10
+    statement
+      command
+        print
+        option
+          env_var  $MYVAR

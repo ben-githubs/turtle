@@ -1,0 +1,15 @@
+CWD - Current working directory
+
+HOME - Path to home user's directory
+
+HOST - Hostname
+
+PATH - List of paths to check for executables
+
+PS1 - Normal prompt string. Should be in the following format:
+    some string whatever {variable} more string {variable again:format specifier}
+Users can reference any other shell variable in here.
+
+USER - Name of the current user
+
+TIME - current unix time (or ctime)

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "bish"
+version = "0.1.0"
+description = "Ben's Incredible SHell"
+authors = ["Ben Airey <benjaminjohnairey@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+termcolor = "^2.5.0"
+colorama = "^0.4.6"
+lark = "^1.2.2"
+pytest = "^8.3.3"
+
+
+[tool.poetry.group.dev.dependencies]
+ruamel-yaml = "^0.18.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

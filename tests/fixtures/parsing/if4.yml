@@ -1,0 +1,31 @@
+input: >
+  if (is_sexy "ben" == $IS_SEXY or ($IM_ACTUALLY_KEANU and is_sexy "keanu")) { print "IM SEXY" }
+
+result: >
+  start
+    statement
+      if
+        nested_conditional
+          composite_conditional
+            conditional
+              command
+                is_sexy
+                option
+                  string  "ben"
+              ==
+              env_var  $IS_SEXY
+            nested_conditional
+              composite_conditional
+                conditional
+                  env_var  $IM_ACTUALLY_KEANU
+                conditional
+                  command
+                    is_sexy
+                    option
+                      string  "keanu"
+        statement_block
+          statement
+            command
+              print
+              option
+                string  "IM SEXY"

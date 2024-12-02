@@ -1,0 +1,20 @@
+input: >
+  while ($is_printing) do {
+    print "printing"
+  }
+
+result: >
+  start
+    statement
+      whiledo
+        while
+          nested_conditional
+            conditional
+              env_var  $is_printing
+        do
+          statement_block
+            statement
+              command
+                print
+                option
+                  string  "printing"

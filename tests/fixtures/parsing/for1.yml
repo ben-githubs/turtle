@@ -1,0 +1,29 @@
+input: >
+  for (x = 1; $x < 10; x += 1) {
+    print $x
+  }
+
+result: >
+  start
+    statement
+      for
+        statement
+          assignment
+            x
+            =
+            int  1
+        conditional
+          env_var  $x
+          <
+          int  10
+        statement
+          assignment
+            x
+            +=
+            int  1
+        statement_block
+          statement
+            command
+              print
+              option
+                env_var  $x

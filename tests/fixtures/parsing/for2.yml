@@ -1,0 +1,26 @@
+input: >
+  for (DONE_FLAG = false; $DONE_FLAG != true; calc_done) {
+    print $x
+  }
+
+result: >
+  start
+    statement
+      for
+        statement
+          assignment
+            DONE_FLAG
+            =
+            false
+        conditional
+          env_var  $DONE_FLAG
+          !=
+          true
+        statement
+          command  calc_done
+        statement_block
+          statement
+            command
+              print
+              option
+                env_var  $x

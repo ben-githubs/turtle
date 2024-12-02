@@ -1,0 +1,62 @@
+NAME: /[a-zA-Z][\w-]*/
+TRUE: "true"
+FALSE: "false"
+NULL: "null"
+value: ENV_VAR          -> env_var
+     | INT              -> int
+     | FLOAT            -> float
+     | ESCAPED_STRING   -> string
+     | "true"           -> true
+     | "false"          -> false
+     | "null"           -> null
+     | inline_statement 
+
+NOTSPACE: /[^\s]+/
+SPACE: /\s+/
+
+ENV_VAR: /\$\w+/
+PATH: /([A-Z]\:\\)?[\w\-\\\/\.]+/
+inline_statement: "$("statement")"
+DASH: "-"
+OPERATOR: "+" | "*" | "-" | "/" | "|" | ">" | "<" | "==" | "!=" | "<=" | ">=" | "=" | "+=" | "-=" | "*=" | "/="
+conditional: (value | command ) (OPERATOR (value | command ))*
+composite_conditional: (conditional | composite_conditional | nested_conditional) ("and" | "or") (conditional | composite_conditional | nested_conditional)
+nested_conditional: "(" (nested_conditional | conditional | composite_conditional) ")"
+
+statement_block: "{" (statement";")* statement";"? "}"
+
+# Control Flow
+foreach: "foreach" NAME "in" (NAME | statement) statement_block
+if: "if" (nested_conditional) statement_block ("elif" (conditional | composite_conditional) statement_block)* ("else" statement_block)?
+do: "do" statement_block
+while: "while" (nested_conditional)
+for: "for" "(" statement ";" (conditional | composite_conditional) ";" statement ")" statement_block
+
+option: DASH~0..2 (value | PATH)+
+command: NAME option*
+
+assignment: NAME OPERATOR value
+
+
+dowhile: do while
+whiledo: while do
+
+statement: foreach
+         | if
+         | for
+         | dowhile
+         | whiledo
+         | assignment
+         | command
+
+start: statement (";" statement)* ";"?
+
+%import common.WS
+%import common.ESCAPED_STRING
+%import common.NUMBER
+%import common.INT
+%import common.FLOAT
+%ignore WS
+
+COMMENT: "#" /[^\n]/*
+%ignore COMMENT

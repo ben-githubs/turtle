@@ -1,0 +1,21 @@
+input: >
+  if (is_sexy "ben" == $IS_SEXY) { print "IM SEXY" }
+
+result: >
+  start
+    statement
+      if
+        nested_conditional
+          conditional
+            command
+              is_sexy
+              option
+                string  "ben"
+            ==
+            env_var  $IS_SEXY
+        statement_block
+          statement
+            command
+              print
+              option
+                string  "IM SEXY"
