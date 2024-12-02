@@ -48,24 +48,13 @@ class EnvironmentVarHolder(MutableMapping):
         self._data: dict[str, Any] = {}
     
 
-    def refresh_executables(self):
-        self._executables = {}
-        for path in self["PATH"]:
-            path = Path(path)
-            if not path.value.exists():
-                continue
-            for item in path.value.iterdir():
-                if bish.util.is_executable(item) and item.stem not in self._executables:
-                    self._executables[item.stem] = item
-    
-
     def get_executable(self, name: str) -> pathlib.Path | None:
         for path in self["PATH"]:
             path = Path(path)
             if not path.value.exists():
                 continue
             for item in path.value.iterdir():
-                if bish.util.is_executable(item) and item.stem == name:
+                if item.stem == name and bish.util.is_executable(item):
                     return item
         # Else, raise an error because we didn't find an executable with that name
         raise CommandNotFound(name)
