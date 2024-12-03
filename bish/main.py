@@ -1,13 +1,10 @@
 """Main program for Ben's Incredible SHell."""
 
-import getpass
 import inspect
-import os
-from pathlib import Path
 import platform
+import re
 
 import colorama
-import termcolor
 
 from bish import builtins
 from bish.errors import CommandNotFound
@@ -23,6 +20,7 @@ ENV_VARS = EnvironmentVarHolder()
 
 BUILTINS: dict[str, builtins.Command] = {}
 
+
 def load_builtins():
     members = inspect.getmembers()
     for member in members:
@@ -30,19 +28,25 @@ def load_builtins():
             cmd = member()
             BUILTINS[cmd.name] = cmd
 
+
 def main():
     print("bish version " + VERSION)
     if platform.system() not in ("Windows", "Linux", "Darwin"):
         print(f"Unsupported platform: '{platform.system()}'. Must exit now.")
         exit(1)
-    
+
     while True:
-        input_ = input(ENV_VARS["PROMPT1"]).strip()
-        
+        prompt1: str = ENV_VARS["PROMPT1"]
+        env_vars = set(m for m in re.findall(r"\$\w+", prompt1))
+        for env_var in env_vars:
+            prompt1 = prompt1.replace(env_var, str(ENV_VARS.get(env_var[1:], "")))
+
+        input_ = input(prompt1).strip()
+
         # If nothing is entered, just move to next loop
         if not input_:
             continue
-            
+
         if input_ == "exit":
             break
 
@@ -52,6 +56,7 @@ def main():
                 evaluate(statement[0], ENV_VARS)
         except CommandNotFound as e:
             print(f"{e}: command not found")
+
 
 if __name__ == "__main__":
     main()

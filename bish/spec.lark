@@ -35,7 +35,7 @@ for: "for" "(" statement ";" (conditional | composite_conditional) ";" statement
 option: DASH~0..2 (value | PATH)+
 command: NAME option*
 
-assignment: NAME OPERATOR value
+assignment: NAME "=" value
 
 
 dowhile: do while
