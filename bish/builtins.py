@@ -74,11 +74,7 @@ class CWD(Command):
         # )
         # self.parser = parser
         self.parser = ArgParser()
-        self.parser.add_argument(
-            ArgFlag("allow_symlinks", store_true=False),
-            "-P",
-            "--physical"
-        )
+        self.parser.add_argument(ArgFlag("allow_symlinks", store_true=False), "-P", "--physical")
 
     def run(self, *args: str) -> None:
         parsed = self.parser.parse_args(*args)
@@ -129,15 +125,13 @@ class ArgPos(CmdArg):
         self.name = name
         self.dest = dest if dest else name
         self.coerce = coerce
-    
+
     def eval(self, arg: Any) -> dict:
-        return {
-            self.dest: self.coerce(arg) if self.coerce is not None else arg
-        }
+        return {self.dest: self.coerce(arg) if self.coerce is not None else arg}
 
 
 class ArgFlag(CmdArg):
-    """ Represents a boolean flag that is either enabled or disabled when passed as an argument. """
+    """Represents a boolean flag that is either enabled or disabled when passed as an argument."""
 
     def __init__(self, dest: str, store_true: bool = True):
         self.dest = dest
@@ -145,18 +139,17 @@ class ArgFlag(CmdArg):
 
     def eval(self, is_present: bool) -> dict:
         # Also return 'true' if we want to store false, but it isn't present
-        return {
-            self.dest: is_present == self.store_true
-        }
-    
+        return {self.dest: is_present == self.store_true}
+
 
 class ArgOpt(CmdArg):
-    """ Represents an option with 1 or more parameters. """
+    """Represents an option with 1 or more parameters."""
+
     def __init__(self, dest: str, nargs: int, coerce: Callable = None):
         self.dest = dest
         self.nargs = nargs
         self.coerce = coerce
-    
+
     def eval(self, *args) -> dict:
         return [self.coerce(arg) if self.coerce else arg for arg in args]
 
@@ -179,14 +172,14 @@ class ArgParser:
                 self.flags.append(arg)
             for name in names:
                 self.kwargs[name] = arg
-    
+
     def is_arg(self, value: Any) -> bool:
-        """ Return if the value indicates a flag or the beginning of a set of options. """
+        """Return if the value indicates a flag or the beginning of a set of options."""
         return isinstance(value, str) and value.startswith("-")
-    
+
     def parse_args(self, *args: Any):
         argspace = {}
-        
+
         # Get positional args first
         n_positional_args = len(self.args)
         for arg, val in zip(self.args, args[:n_positional_args]):
@@ -206,8 +199,8 @@ class ArgParser:
 
             # First, check if we are expecting a new argument definitioon (opt 1 or 2)
             if not arg and not self.is_arg(value):
-                    raise ArgumentError(f"Expected new argument; got {value}")
-            
+                raise ArgumentError(f"Expected new argument; got {value}")
+
             # Otherwise, check if this is a new arg, and we need to wrap up our previous one
             if self.is_arg(value):
                 if arg:
@@ -219,26 +212,24 @@ class ArgParser:
                 arg = self.kwargs.get(value)
                 if not arg:
                     raise ArgumentError(f"Unrecognized arg '{value}'")
-                
+
                 # If the new arg is a flag
                 if isinstance(arg, ArgFlag):
                     flags.add(arg)
                     arg = None
-                
+
                 # Else, continue to next value
                 continue
 
             # Lastly, if this is a parameter for the current argument
             arg_buffer.append(value)
 
-            idx += 1
-        
         # At the end of the loop, if there's anything left in the arg buffer, we shoudl evaluate it
         if arg:
             argspace.update(arg.eval(*arg_buffer))
-        
+
         # Lastly, evaluate any flags
         for flag in self.flags:
             argspace.update(flag.eval(flag in flags))
-        
+
         return argspace

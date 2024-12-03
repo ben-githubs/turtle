@@ -13,7 +13,6 @@ import bish.util
 
 
 class MyTransformer(Transformer):
-
     @v_args(inline=True)
     def assignment(self, varname: str, value: LexerToken):
         return Assignment(varname, value)
@@ -28,11 +27,11 @@ class MyTransformer(Transformer):
 
     def false(self, _):
         return False
-    
+
     @v_args(inline=True)
     def float(self, n):
         return float(n)
-    
+
     @v_args(inline=True)
     def int(self, n):
         return int(n)
@@ -66,7 +65,7 @@ class Assignment(Token):
     def __init__(self, name: str, value: Any):
         self.name = name
         self.value = value
-    
+
     def eval(self, env: EnvironmentVarHolder):
         value = self.value
         if isinstance(value, Token):
