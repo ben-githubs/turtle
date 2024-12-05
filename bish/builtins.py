@@ -32,33 +32,39 @@ class Print(Command):
     name = "print"
 
     def setup_parser(self):
-        parser = argparse.ArgumentParser(prog=self.name, description="Print output to the console")
-        parser.add_argument("string")
-        parser.add_argument(
-            "-n",
-            dest="trailing_newline",
-            action="store_false",
-            default=True,
-            help="do not output the trailing newline",
-        )
-        parser.add_argument(
-            "-e",
-            dest="enable_escapes",
-            action="store_true",
-            help="enable interpretation of backslash escapes",
-        )
-        parser.add_argument(
-            "-E",
-            dest="enable_escapes",
-            action="store_false",
-            help="disable interpretation of backslash escapes (default)",
-        )
-        self.parser = parser
+        # parser = argparse.ArgumentParser(prog=self.name, description="Print output to the console")
+        # parser.add_argument("string")
+        # parser.add_argument(
+        #     "-n",
+        #     dest="trailing_newline",
+        #     action="store_false",
+        #     default=True,
+        #     help="do not output the trailing newline",
+        # )
+        # parser.add_argument(
+        #     "-e",
+        #     dest="enable_escapes",
+        #     action="store_true",
+        #     help="enable interpretation of backslash escapes",
+        # )
+        # parser.add_argument(
+        #     "-E",
+        #     dest="enable_escapes",
+        #     action="store_false",
+        #     help="disable interpretation of backslash escapes (default)",
+        # )
+        # self.parser = parser
+
+        self.parser = ArgParser()
+        self.parser.add_argument(ArgPos("string", coerce=str))
+        self.parser.add_argument(ArgFlag("trailing_newline", store_true=False), "-n")
+        self.parser.add_argument(ArgFlag("enable_escapes", store_true=True), "-e")
+        self.parser.add_argument(ArgFlag("enable_escapes", store_true=False), "-E")
 
     def run(self, *args: str) -> None:
-        parsed = self.parser.parse_args(args)
-        line_ending = "\n" if parsed.trailing_newline else ""
-        print(parsed.string, end=line_ending)
+        parsed = self.parser.parse_args(*args)
+        line_ending = "\n" if parsed["trailing_newline"] else ""
+        print(parsed["string"], end=line_ending)
 
 
 class CWD(Command):
@@ -98,7 +104,7 @@ class CD(Command):
         self.parser = parser
 
     def run(self, *args: str) -> None:
-        parsed = self.parser.parse_args(args)
+        parsed = self.parser.parse_args(*args)
         err = ""
         try:
             d = Path(parsed.dir).expanduser().resolve()
@@ -166,7 +172,7 @@ class ArgParser:
         *names: str,
     ):
         if isinstance(arg, ArgPos):
-            self.pos_args.append(arg)
+            self.args.append(arg)
         else:
             if isinstance(arg, ArgFlag):
                 self.flags.append(arg)
