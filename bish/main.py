@@ -11,6 +11,7 @@ from bish.errors import CommandNotFound
 from bish.variables import EnvironmentVarHolder
 from bish.parsing import parser
 from bish.evaluate import evaluate
+from bish.multilines import is_complete, concatenate_incomplete_lines
 
 VERSION = "0.0.1"
 
@@ -41,7 +42,12 @@ def main():
         for env_var in env_vars:
             prompt1 = prompt1.replace(env_var, str(ENV_VARS.get(env_var[1:], "")))
 
-        input_ = input(prompt1).strip()
+        input_ = [input(prompt1).strip()]
+        while not is_complete(" ".join(input_)):
+            input_.append(input(ENV_VARS["PROMPT2"]))
+        
+        input_ = concatenate_incomplete_lines(input_)
+
 
         # If nothing is entered, just move to next loop
         if not input_:
