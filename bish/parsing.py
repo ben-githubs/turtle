@@ -35,10 +35,10 @@ class MyTransformer(Transformer):
 
     def float(self, n):
         return float(n)
-    
+
     def if_(self, cond: Conditional, statement: Statement, else_: Statement):
         return If(cond, statement, else_)
-    
+
     def int(self, n):
         return int(n)
 
@@ -97,7 +97,7 @@ class Conditional(Token, ABC):
 class NestedConditional(Conditional):
     def __init__(self, conditional: Conditional):
         self.conditional = conditional
-    
+
     def eval(self, env: EnvironmentVarHolder) -> bool:
         return self.conditional.eval(env)
 
@@ -170,11 +170,11 @@ class Command(Statement):
 class StatementBlock(Token):
     def __init__(self, *statements: Statement):
         self.statements = statements
-    
 
     def eval(self, env: EnvironmentVarHolder):
         for statement in self.statements:
             statement.eval(env)
+
 
 parser_options = {"parser": "lalr", "transformer": MyTransformer()}
 parser = Lark.open("spec.lark", rel_to=__file__, **parser_options)
