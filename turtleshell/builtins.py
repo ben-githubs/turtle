@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
-from bish.datatypes import CommandResult
-from bish.errors import ArgumentError
+from turtleshell.datatypes import CommandResult
+from turtleshell.errors import ArgumentError
 
 _BUILTINS = {}
 

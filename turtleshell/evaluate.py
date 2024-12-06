@@ -1,5 +1,5 @@
-from bish.parsing import Token
-from bish.variables import EnvironmentVarHolder
+from turtleshell.parsing import Token
+from turtleshell.variables import EnvironmentVarHolder
 
 
 def evaluate(token: Token, env: EnvironmentVarHolder):

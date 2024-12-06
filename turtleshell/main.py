@@ -10,13 +10,13 @@ import colorama
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import InMemoryHistory
 
-from bish import builtins
-from bish.errors import CommandNotFound
-from bish.datatypes import Path
-from bish.variables import EnvironmentVarHolder
-from bish.parsing import parser
-from bish.evaluate import evaluate
-from bish.multilines import is_complete, concatenate_incomplete_lines
+from turtleshell import builtins
+from turtleshell.errors import CommandNotFound
+from turtleshell.datatypes import Path
+from turtleshell.variables import EnvironmentVarHolder
+from turtleshell.parsing import parser
+from turtleshell.evaluate import evaluate
+from turtleshell.multilines import is_complete, concatenate_incomplete_lines
 
 VERSION = "0.0.1"
 
@@ -45,7 +45,7 @@ def get_histfile() -> pathlib.Path:
 
 
 def main():
-    print("bish version " + VERSION)
+    print("🐢 turtle version " + VERSION)
     if platform.system() not in ("Windows", "Linux", "Darwin"):
         print(f"Unsupported platform: '{platform.system()}'. Must exit now.")
         exit(1)

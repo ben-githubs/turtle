@@ -7,10 +7,10 @@ import subprocess
 from lark import Lark, Transformer, v_args
 from lark.lexer import Token as LexerToken
 
-from bish.datatypes import CommandResult, Path
-from bish.errors import CommandNotFound
-from bish.variables import EnvironmentVarHolder
-import bish.util
+from turtleshell.datatypes import CommandResult, Path
+from turtleshell.errors import CommandNotFound
+from turtleshell.variables import EnvironmentVarHolder
+import turtleshell.util
 
 
 @v_args(inline=True)
@@ -143,7 +143,7 @@ class Command(Statement):
         self.options = options
 
     def eval(self, env: EnvironmentVarHolder):
-        if cmd := bish.util.get_builtin(self.name):
+        if cmd := turtleshell.util.get_builtin(self.name):
             options = []
             for option in self.options:
                 if isinstance(option, Token):
@@ -161,7 +161,7 @@ class Command(Statement):
             if not path.value.exists():
                 continue
             for item in path.value.iterdir():
-                if item.stem == name and bish.util.is_executable(item):
+                if item.stem == name and turtleshell.util.is_executable(item):
                     return item
         # Else, raise an error because we didn't find an executable with that name
         raise CommandNotFound(name)

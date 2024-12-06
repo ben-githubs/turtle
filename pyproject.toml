@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "bish"
+name = "turtleshell"
 version = "0.1.0"
-description = "Ben's Incredible SHell"
+description = "My attempt at a modern shell, built in Python!"
 authors = ["Ben Airey <benjaminjohnairey@gmail.com>"]
 readme = "README.md"
 

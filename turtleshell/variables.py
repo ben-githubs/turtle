@@ -8,10 +8,10 @@ import pathlib
 import tempfile
 from typing import Any
 
-from bish.builtins import cwd
-from bish.datatypes import DateTime, Path
-from bish.errors import InvalidAssignment, CommandNotFound
-import bish.util
+from turtleshell.builtins import cwd
+from turtleshell.datatypes import DateTime, Path
+from turtleshell.errors import InvalidAssignment, CommandNotFound
+import turtleshell.util
 
 CROSS_PLATFORM_MAPPINGS = {"nt": {"PROMPT": "B_PS1"}, "posix": {"PS1": "B_PS1"}}
 
@@ -28,7 +28,7 @@ SHELL_VARS = {
 
 # Some vars can be edited, but not deleted. We define the default value of those here.
 DEFAULT_VALUES = {
-    "PATH": bish.util.get_os_path(),
+    "PATH": turtleshell.util.get_os_path(),
     "PROMPT1": r"$USER@$HOST: $CWD $ ",  # Prompt string
     "RPROMPT1": "",  # Prints on right side of terminal when prompting for input
     "PROMPT2": "> ",  # Prompt for trailing input
@@ -48,7 +48,7 @@ class EnvironmentVarHolder(MutableMapping):
             if not path.value.exists():
                 continue
             for item in path.value.iterdir():
-                if item.stem == name and bish.util.is_executable(item):
+                if item.stem == name and turtleshell.util.is_executable(item):
                     return item
         # Else, raise an error because we didn't find an executable with that name
         raise CommandNotFound(name)

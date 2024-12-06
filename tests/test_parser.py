@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from ruamel.yaml import YAML
 
-from bish.parsing import parser_without_transformer as parser
+from turtleshell.parsing import parser_without_transformer as parser
 
 yaml = YAML(typ="safe")
 
