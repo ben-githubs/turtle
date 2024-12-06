@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 import pathlib
 from typing import Any
@@ -12,29 +13,37 @@ from bish.variables import EnvironmentVarHolder
 import bish.util
 
 
+@v_args(inline=True)
 class MyTransformer(Transformer):
-    @v_args(inline=True)
     def assignment(self, varname: str, value: LexerToken):
         return Assignment(varname, value)
 
-    @v_args(inline=True)
-    def command(self, command_name: LexerToken, options: list = []):
+    def command(self, command_name: LexerToken, *options):
         return Command(command_name.value, *options)
 
-    @v_args(inline=True)
+    def cond_eq(self, left: Any, right: Any):
+        return IsEqualTo(left, right)
+
+    def conditional(self, conditional):
+        return conditional
+
     def env_var(self, varname: str):
         return EnvVar(varname[1:])
 
     def false(self, _):
         return False
 
-    @v_args(inline=True)
     def float(self, n):
         return float(n)
-
-    @v_args(inline=True)
+    
+    def if_(self, cond: Conditional, statement: Statement, else_: Statement):
+        return If(cond, statement, else_)
+    
     def int(self, n):
         return int(n)
+
+    def nested_conditional(self, cond: Conditional):
+        return NestedConditional(cond)
 
     def null(self, _):
         return None
@@ -47,7 +56,9 @@ class MyTransformer(Transformer):
         """Return the statement value, instead of a lexer token"""
         return statement
 
-    @v_args(inline=True)
+    def statement_block(self, *statements):
+        return StatementBlock(*statements)
+
     def string(self, s):
         return s[1:-1].replace('\\"', '"')
 
@@ -71,7 +82,6 @@ class Assignment(Token):
         if isinstance(value, Token):
             value = value.eval(env)
         env[self.name] = value
-        print(f"{self.name}, {value}")
 
 
 class Statement(Token):
@@ -84,6 +94,14 @@ class Conditional(Token, ABC):
         pass
 
 
+class NestedConditional(Conditional):
+    def __init__(self, conditional: Conditional):
+        self.conditional = conditional
+    
+    def eval(self, env: EnvironmentVarHolder) -> bool:
+        return self.conditional.eval(env)
+
+
 class If(Token):
     def __init__(self, conditional: Conditional, statement: Statement, else_: Token = None):
         self.conditional = conditional
@@ -92,9 +110,9 @@ class If(Token):
 
     def eval(self, env: EnvironmentVarHolder):
         if self.conditional.eval(env):
-            self.statement.eval
+            self.statement.eval(env)
         elif self.else_:
-            self.else_.eval()
+            self.else_.eval(env)
 
 
 class IsEqualTo(Conditional):
@@ -148,6 +166,15 @@ class Command(Statement):
         # Else, raise an error because we didn't find an executable with that name
         raise CommandNotFound(name)
 
+
+class StatementBlock(Token):
+    def __init__(self, *statements: Statement):
+        self.statements = statements
+    
+
+    def eval(self, env: EnvironmentVarHolder):
+        for statement in self.statements:
+            statement.eval(env)
 
 parser_options = {"parser": "lalr", "transformer": MyTransformer()}
 parser = Lark.open("spec.lark", rel_to=__file__, **parser_options)

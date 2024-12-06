@@ -19,7 +19,8 @@ PATH: /([A-Z]\:\\)?[\w\-\\\/\.]+/
 inline_statement: "$("statement")"
 DASH: "-"
 OPERATOR: "+" | "*" | "-" | "/" | "|" | ">" | "<" | "==" | "!=" | "<=" | ">=" | "=" | "+=" | "-=" | "*=" | "/="
-conditional: (value | command ) (OPERATOR (value | command ))*
+cond_eq: (value | command) "==" (value | command)
+conditional: cond_eq | (value | command ) (OPERATOR (value | command ))*
 composite_conditional: (conditional | composite_conditional | nested_conditional) ("and" | "or") (conditional | composite_conditional | nested_conditional)
 nested_conditional: "(" (nested_conditional | conditional | composite_conditional) ")"
 
@@ -27,7 +28,7 @@ statement_block: "{" (statement";")* statement";"? "}"
 
 # Control Flow
 foreach: "foreach" NAME "in" (NAME | statement) statement_block
-if: "if" (nested_conditional) statement_block ("elif" (conditional | composite_conditional) statement_block)* ("else" statement_block)?
+if_: "if" (nested_conditional) statement_block ("elif" (conditional | composite_conditional) statement_block)* ("else" statement_block)?
 do: "do" statement_block
 while: "while" (nested_conditional)
 for: "for" "(" statement ";" (conditional | composite_conditional) ";" statement ")" statement_block
@@ -42,7 +43,7 @@ dowhile: do while
 whiledo: while do
 
 statement: foreach
-         | if
+         | if_
          | for
          | dowhile
          | whiledo

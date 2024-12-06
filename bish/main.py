@@ -53,7 +53,7 @@ def main():
         tree = parser.parse(input_)
         try:
             for statement in tree.children:
-                evaluate(statement[0], ENV_VARS)
+                evaluate(statement, ENV_VARS)
         except CommandNotFound as e:
             print(f"{e}: command not found")
 
