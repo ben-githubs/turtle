@@ -1,6 +1,7 @@
 """Main program for Ben's Incredible SHell."""
 
 import inspect
+import os
 import platform
 import re
 
@@ -8,6 +9,7 @@ import colorama
 
 from bish import builtins
 from bish.errors import CommandNotFound
+from bish.datatypes import Path
 from bish.variables import EnvironmentVarHolder
 from bish.parsing import parser
 from bish.evaluate import evaluate
@@ -45,9 +47,15 @@ def main():
         input_ = [input(prompt1).strip()]
         while not is_complete(" ".join(input_)):
             input_.append(input(ENV_VARS["PROMPT2"]))
-        
+
         input_ = concatenate_incomplete_lines(input_)
 
+        # Log input to history file
+        print(ENV_VARS.get("HISTFILE"))
+        if histfile := ENV_VARS.get("HISTFILE"):
+            if isinstance(histfile, Path):
+                with histfile.value.expanduser().resolve().open("a") as f:
+                    f.write(input_ + os.linesep)
 
         # If nothing is entered, just move to next loop
         if not input_:

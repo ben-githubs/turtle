@@ -28,12 +28,13 @@ SHELL_VARS = {
 
 # Some vars can be edited, but not deleted. We define the default value of those here.
 DEFAULT_VALUES = {
+    "PATH": bish.util.get_os_path(),
     "PROMPT1": r"$USER@$HOST: $CWD $ ",  # Prompt string
     "RPROMPT1": "",  # Prints on right side of terminal when prompting for input
     "PROMPT2": "> ",  # Prompt for trailing input
     "PROMPT3": "#?",  # Don't remember what this does
     "PROMPT4": "+",  # For debug lines (do we even want this?)
-    "PATH": bish.util.get_os_path(),
+    "HISTFILE": Path(pathlib.Path("~/.turtle_history")),
 }
 
 
