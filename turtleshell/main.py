@@ -50,7 +50,6 @@ def main():
         print(f"Unsupported platform: '{platform.system()}'. Must exit now.")
         exit(1)
 
-
     # Initialize prompt history
     histfile = get_histfile()
     with histfile.open("r") as f:
@@ -60,7 +59,7 @@ def main():
         history = history[-100:]
         with histfile.open("w") as f:
             f.write(os.linesep.join(history))
-    
+
     prompt_session = PromptSession(history=InMemoryHistory(history_strings=history))
 
     while True:

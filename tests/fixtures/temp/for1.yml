@@ -10,7 +10,6 @@ result: >
         statement
           assignment
             x
-            =
             int  1
         conditional
           env_var  $x

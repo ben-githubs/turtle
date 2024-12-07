@@ -4,15 +4,15 @@ input: >
 result: >
   start
     statement
-      if
+      if_
         nested_conditional
           conditional
-            command
-              is_sexy
-              option
-                string  "ben"
-            ==
-            env_var  $IS_SEXY
+            cond_eq
+              command
+                is_sexy
+                option
+                  string  "ben"
+              env_var  $IS_SEXY
         statement_block
           statement
             command
