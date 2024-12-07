@@ -7,7 +7,6 @@ result: >
     statement
       assignment
         MYVAR
-        =
         int  10
     statement
       command

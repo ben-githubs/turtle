@@ -4,16 +4,16 @@ input: >
 result: >
   start
     statement
-      if
+      if_
         nested_conditional
           composite_conditional
             conditional
-              command
-                is_sexy
-                option
-                  string  "ben"
-              ==
-              env_var  $IS_SEXY
+              cond_eq
+                command
+                  is_sexy
+                  option
+                    string  "ben"
+                env_var  $IS_SEXY
             conditional
               command
                 is_sexy
