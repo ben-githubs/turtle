@@ -8,11 +8,13 @@ value: ENV_VAR          -> env_var
      | "null"           -> null
      | inline_statement 
 
+
+# The following terminals must be defined wirth high priority, otherwise you end up with weird stuff like "/=" being intepreted as a path followed by an equals sign >:(
 EQUAL.999999: "="
 PLU_EQUAL.999999: "+="
-MIN_EQUAL.999999: "-=" # SAME DUMB REASON AS BELOW
+MIN_EQUAL.999999: "-="
 MUL_EQUAL.999999: "*="
-DIV_EQUAL.999999: "/=" # STUPID LALR KEEPS THINKING "x /= 10" IS "NAME PATH =" AND I CAN'T SET RULE PRIORITY ONLY TERMINALS SO THIS IS THE FUCKING FIX
+DIV_EQUAL.999999: "/="
 
 assignment: NAME (EQUAL|PLU_EQUAL|MIN_EQUAL|MUL_EQUAL|DIV_EQUAL) value
 
