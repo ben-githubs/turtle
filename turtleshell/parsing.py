@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import pathlib
-from typing import Any
+from typing import Any, Callable
 import subprocess
 
 from lark import Lark, Transformer, v_args
@@ -15,8 +15,25 @@ import turtleshell.util
 
 @v_args(inline=True)
 class MyTransformer(Transformer):
-    def assignment(self, varname: str, value: LexerToken):
-        return Assignment(varname, value)
+    def assignment(self, varname: str, operator: str, value: LexerToken):
+        # ruff: noqa: E731
+        #   Prevent linter from complaining about assignment of lambda to variable
+        f: Callable[[Any, Any], Any] = None
+        match operator:
+            case "=":
+                f = lambda _, y: y
+            case "+=":
+                f = lambda x, y: x + y
+            case "-=":
+                f = lambda x, y: x - y
+            case "*=":
+                f = lambda x, y: x * y
+            case "/=":
+                f = lambda x, y: x / y
+            case "_":
+                raise ValueError(f"Invalid assignment operator: {operator}")
+
+        return Assignment(varname, value, f)
 
     def command(self, command_name: LexerToken, *options):
         return Command(command_name.value, *options)
@@ -73,15 +90,16 @@ class Token:
 
 
 class Assignment(Token):
-    def __init__(self, name: str, value: Any):
+    def __init__(self, name: str, value: Any, func: Callable[[Any, Any], Any]):
         self.name = name
         self.value = value
+        self.func = func
 
     def eval(self, env: EnvironmentVarHolder):
         value = self.value
         if isinstance(value, Token):
             value = value.eval(env)
-        env[self.name] = value
+        env[self.name] = self.func(env[self.name], value)
 
 
 class Statement(Token):

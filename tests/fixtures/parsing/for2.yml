@@ -10,6 +10,7 @@ result: >
         statement
           assignment
             DONE_FLAG
+            =
             false
         conditional
           env_var  $DONE_FLAG
