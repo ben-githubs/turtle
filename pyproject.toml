@@ -19,6 +19,10 @@ prompt-toolkit = "^3.0.48"
 ruamel-yaml = "^0.18.6"
 
 
+[tool.poetry.scripts]
+turtle = "turtleshell.main:main"
+
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [

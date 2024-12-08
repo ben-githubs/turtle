@@ -1,7 +1,4 @@
 NAME: /[a-zA-Z][\w-]*/
-TRUE: "true"
-FALSE: "false"
-NULL: "null"
 value: ENV_VAR          -> env_var
      | INT              -> int
      | FLOAT            -> float
@@ -11,14 +8,20 @@ value: ENV_VAR          -> env_var
      | "null"           -> null
      | inline_statement 
 
-NOTSPACE: /[^\s]+/
-SPACE: /\s+/
+
+# The following terminals must be defined wirth high priority, otherwise you end up with weird stuff like "/=" being intepreted as a path followed by an equals sign >:(
+EQUAL.999999: "="
+PLU_EQUAL.999999: "+="
+MIN_EQUAL.999999: "-="
+MUL_EQUAL.999999: "*="
+DIV_EQUAL.999999: "/="
+
+assignment: NAME (EQUAL|PLU_EQUAL|MIN_EQUAL|MUL_EQUAL|DIV_EQUAL) value
 
 ENV_VAR: /\$\w+/
 PATH: /([A-Z]\:\\)?[\w\-\\\/\.]+/
 inline_statement: "$("statement")"
-DASH: "-"
-OPERATOR: "+" | "*" | "-" | "/" | "|" | ">" | "<" | "==" | "!=" | "<=" | ">=" | "=" | "+=" | "-=" | "*=" | "/="
+OPERATOR: "+" | "*" | "-" | "/" | "|" | ">" | "<" | "==" | "!=" | "<=" | ">=" 
 cond_eq: (value | command) "==" (value | command)
 conditional: cond_eq | (value | command ) (OPERATOR (value | command ))*
 composite_conditional: (conditional | composite_conditional | nested_conditional) ("and" | "or") (conditional | composite_conditional | nested_conditional)
@@ -33,10 +36,10 @@ do: "do" statement_block
 while: "while" (nested_conditional)
 for: "for" "(" statement ";" (conditional | composite_conditional) ";" statement ")" statement_block
 
-option: DASH~0..2 (value | PATH)+
+option: "-"~0..2 (value | PATH)+
 command: NAME option*
 
-assignment: NAME "=" value
+
 
 
 dowhile: do while
